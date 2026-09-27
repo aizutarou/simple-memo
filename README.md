@@ -2,6 +2,13 @@
 
 シンプルなメモアプリ。仕様は [docs/SPEC.md](./docs/SPEC.md) を参照。
 
+## 開発
+
+```bash
+npm install
+npm run dev
+```
+
 ## ステータス
 
-仕様検討中（MVP スコープの確定待ち）
+MVP 実装済み（`docs/SPEC.md` v0.3.1）
