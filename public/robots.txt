@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+Disallow: /memos
+Disallow: /folders
+Disallow: /search
+Disallow: /guide
+
+Sitemap: https://simple-memo.aizutarou1008.workers.dev/sitemap.xml

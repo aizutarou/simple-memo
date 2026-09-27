@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import {
   BrowserRouter,
   Navigate,
@@ -6,6 +7,7 @@ import {
   useLocation,
   type Location,
 } from "react-router-dom";
+import { trackPageView } from "./lib/analytics";
 import { FolderListPage } from "./pages/FolderListPage";
 import { MemoEditPage } from "./pages/MemoEditPage";
 import { MemoListPage } from "./pages/MemoListPage";
@@ -19,6 +21,10 @@ type LocationState = {
 function AppRoutes() {
   const location = useLocation();
   const backgroundLocation = (location.state as LocationState | null)?.backgroundLocation;
+
+  useEffect(() => {
+    trackPageView(location.pathname);
+  }, [location.pathname]);
 
   return (
     <>
