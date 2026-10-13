@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { ChevronRight, FileText, Search } from "lucide-react";
+import { ChevronRight, FileText, Search, Trash2 } from "lucide-react";
 import { BottomSheet } from "../components/BottomSheet";
 import { EmptyState } from "../components/EmptyState";
 import { Fab } from "../components/Fab";
@@ -157,20 +157,30 @@ export function MemoListPage() {
                       },
                     ]}
                   >
-                    <Link
-                      to={`/memos/${memo.id}`}
-                      className="card card--interactive memo-card"
-                      onClick={() => setOpenSwipeMemoId(null)}
-                    >
-                      <span className="card-icon card-icon--memo" aria-hidden>
-                        <FileText size={20} strokeWidth={1.75} />
-                      </span>
-                      <span className="card-body">
-                        <span className="card-title">{memoListTitle(memo.title, memo.body)}</span>
-                        <span className="card-meta">作成 {formatCreatedAt(memo.createdAt)}</span>
-                      </span>
-                      <ChevronRight className="card-chevron" size={20} strokeWidth={2} aria-hidden />
-                    </Link>
+                    <div className="card card--row memo-list-row">
+                      <Link
+                        to={`/memos/${memo.id}`}
+                        className="card-link-area card--interactive memo-card"
+                        onClick={() => setOpenSwipeMemoId(null)}
+                      >
+                        <span className="card-icon card-icon--memo" aria-hidden>
+                          <FileText size={20} strokeWidth={1.75} />
+                        </span>
+                        <span className="card-body">
+                          <span className="card-title">{memoListTitle(memo.title, memo.body)}</span>
+                          <span className="card-meta">作成 {formatCreatedAt(memo.createdAt)}</span>
+                        </span>
+                        <ChevronRight className="card-chevron" size={20} strokeWidth={2} aria-hidden />
+                      </Link>
+                      <div className="card-toolbar desktop-only">
+                        <IconButton
+                          icon={Trash2}
+                          label="メモを削除"
+                          variant="danger"
+                          onClick={() => setDeleteTarget(memo)}
+                        />
+                      </div>
+                    </div>
                   </SwipeActionsRow>
                 </li>
               ))}

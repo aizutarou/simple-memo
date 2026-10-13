@@ -15,6 +15,8 @@ type Props = {
 
 const FOCUS_DELAY_MS = 320;
 const DRAG_START_PX = 6;
+const FOCUSABLE_SELECTOR =
+  'a[href], button:not([disabled]), input:not([disabled]), textarea:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])';
 
 type ViewportFrame = {
   top: string;
@@ -71,10 +73,12 @@ export function BottomSheet({ open, title, onClose, children, footer, fill = fal
   const rootRef = useRef<HTMLDivElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
   const dragRef = useRef<DragState | null>(null);
+  const previousFocusRef = useRef<HTMLElement | null>(null);
   onCloseRef.current = onClose;
 
   const onGrabPointerDown = (event: React.PointerEvent<HTMLDivElement>) => {
     if (event.button !== 0) return;
+    if (window.matchMedia("(min-width: 768px)").matches) return;
     if ((event.target as HTMLElement).closest("button")) return;
     dragRef.current = { pointerId: event.pointerId, startY: event.clientY, dy: 0 };
     event.currentTarget.setPointerCapture(event.pointerId);
@@ -154,6 +158,8 @@ export function BottomSheet({ open, title, onClose, children, footer, fill = fal
 
     const el = rootRef.current;
     if (el) applyViewportFrame(el);
+    previousFocusRef.current =
+      document.activeElement instanceof HTMLElement ? document.activeElement : null;
 
     let frame = 0;
     const scheduleSync = () => {
@@ -173,13 +179,33 @@ export function BottomSheet({ open, title, onClose, children, footer, fill = fal
     vv?.addEventListener("scroll", scheduleSync);
 
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onCloseRef.current();
+      if (e.key === "Escape") {
+        onCloseRef.current();
+        return;
+      }
+      if (e.key !== "Tab" || !el) return;
+      const focusable = [...el.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR)].filter(
+        (node) => node.offsetParent !== null,
+      );
+      if (focusable.length === 0) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
     };
     document.addEventListener("keydown", onKey);
 
+    const focusDelay = window.matchMedia("(min-width: 768px)").matches ? 0 : FOCUS_DELAY_MS;
     const focusId = window.setTimeout(() => {
-      el?.querySelector<HTMLElement>("input, textarea")?.focus({ preventScroll: true });
-    }, FOCUS_DELAY_MS);
+      const preferred = el?.querySelector<HTMLElement>("input, textarea, select");
+      const fallback = el?.querySelector<HTMLElement>(FOCUSABLE_SELECTOR);
+      (preferred ?? fallback)?.focus({ preventScroll: true });
+    }, focusDelay);
 
     return () => {
       window.cancelAnimationFrame(settleId);
@@ -190,6 +216,8 @@ export function BottomSheet({ open, title, onClose, children, footer, fill = fal
       vv?.removeEventListener("scroll", scheduleSync);
       if (el) clearSheetViewportStyles(el);
       unlockBodyScroll();
+      previousFocusRef.current?.focus({ preventScroll: true });
+      previousFocusRef.current = null;
     };
   }, [open]);
 

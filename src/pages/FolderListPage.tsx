@@ -205,7 +205,7 @@ export function FolderListPage() {
               フォルダ一覧
             </h2>
             <p className="home-section-desc">フォルダを開くと、その中のメモを見たり追加できます。</p>
-            <ul className="card-list">
+            <ul className="card-list home-folder-list">
               {folders.map(renderFolderRow)}
             </ul>
           </section>

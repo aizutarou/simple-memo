@@ -26,7 +26,7 @@ export function Layout({
   const isHome = headerVariant === "home";
 
   return (
-    <div className="app-shell">
+    <div className={`app-shell app-shell--${isHome ? "home" : "default"}`}>
       <header className={`app-header${isHome ? " app-header--home" : ""}`}>
         <div className="app-header-row">
           <div className="app-header-start">
@@ -48,7 +48,7 @@ export function Layout({
           </div>
         </div>
       </header>
-      <main className="app-main">{children}</main>
+      <main className={`app-main app-main--${isHome ? "home" : "default"}`}>{children}</main>
       {fab ? fab : null}
     </div>
   );

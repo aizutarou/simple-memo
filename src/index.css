@@ -392,6 +392,10 @@ button {
   flex-shrink: 0;
 }
 
+.desktop-only {
+  display: none;
+}
+
 .card-chevron {
   color: #c4c4c4;
   flex-shrink: 0;
@@ -633,6 +637,11 @@ button {
 .icon-btn:focus-visible,
 .back-btn:focus-visible,
 .fab:focus-visible,
+.home-action:focus-visible,
+.card-link-area:focus-visible,
+.card--interactive:focus-visible,
+.folder-picker-option:focus-visible,
+.guide-disclosure-summary:focus-visible,
 .btn-secondary:focus-visible,
 .btn-primary:focus-visible,
 .btn-ghost:focus-visible,
@@ -640,6 +649,11 @@ button {
 .btn-danger-outline:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 2px;
+}
+
+.card-link-area:focus-visible,
+.card--interactive:focus-visible {
+  outline-offset: -2px;
 }
 
 .icon-btn--accent {
@@ -1175,5 +1189,116 @@ button {
   }
   to {
     transform: translateY(0);
+  }
+}
+
+@media (min-width: 768px) {
+  .app-shell {
+    max-width: 960px;
+    border-inline: 1px solid var(--border);
+    box-shadow: 0 0 32px rgb(0 0 0 / 5%);
+  }
+
+  .app-shell--default .app-header-row,
+  .app-main--default {
+    width: 100%;
+    max-width: 720px;
+    margin-inline: auto;
+  }
+
+  .app-main {
+    padding: 1.5rem 2rem 6rem;
+  }
+
+  .app-main--home {
+    width: 100%;
+  }
+
+  .home-folder-list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: start;
+  }
+
+  .desktop-only {
+    display: flex;
+  }
+
+  .swipe-row-actions {
+    display: none;
+  }
+
+  .swipe-row-content,
+  .swipe-row-content--dragging {
+    transform: none !important;
+  }
+
+  .fab {
+    right: calc(50% - 480px + 2rem);
+  }
+
+  .sheet-root {
+    align-items: center;
+    padding: 2rem;
+  }
+
+  .sheet-panel {
+    max-width: 480px;
+    max-height: 100%;
+    border-radius: 16px;
+    padding-bottom: 1rem;
+    animation: modal-page-in 0.2s ease;
+    box-shadow: 0 12px 48px rgb(0 0 0 / 22%);
+  }
+
+  .sheet-panel--fill {
+    height: min(720px, 100%);
+  }
+
+  .sheet-handle {
+    display: none;
+  }
+
+  .sheet-header {
+    margin-top: 1rem;
+  }
+
+  .modal-page {
+    align-items: center;
+    padding: 2rem;
+  }
+
+  .modal-page-panel {
+    max-width: 640px;
+    height: min(720px, calc(100dvh - 4rem));
+    border-radius: 16px;
+  }
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .card-link-area:hover,
+  .card--interactive:hover {
+    background: #f8f8f8;
+  }
+
+  .icon-btn:hover,
+  .btn-ghost:hover,
+  .guide-disclosure-summary:hover {
+    background: rgb(0 0 0 / 6%);
+  }
+
+  .home-action--primary:hover,
+  .btn-primary:hover,
+  .btn-secondary:hover {
+    filter: brightness(0.96);
+  }
+
+  .home-action--secondary:hover,
+  .folder-picker-option:not(.is-selected):hover {
+    background: #f8f8f8;
+  }
+
+  .btn-danger-fill:hover {
+    filter: brightness(0.94);
   }
 }

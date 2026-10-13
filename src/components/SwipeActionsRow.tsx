@@ -3,6 +3,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 const ACTION_WIDTH = 76;
 const SNAP_RATIO = 0.35;
 const DRAG_START_PX = 10;
+const DESKTOP_QUERY = "(min-width: 768px)";
 
 export type SwipeAction = {
   label: string;
@@ -50,7 +51,7 @@ export function SwipeActionsRow({
   }, [open, close]);
 
   const onPointerDown = (e: React.PointerEvent) => {
-    if (disabled) return;
+    if (disabled || e.pointerType === "mouse" || window.matchMedia(DESKTOP_QUERY).matches) return;
     e.currentTarget.setPointerCapture(e.pointerId);
     dragging.current = false;
     startX.current = e.clientX;
@@ -58,7 +59,7 @@ export function SwipeActionsRow({
   };
 
   const onPointerMove = (e: React.PointerEvent) => {
-    if (disabled) return;
+    if (disabled || e.pointerType === "mouse" || window.matchMedia(DESKTOP_QUERY).matches) return;
     const dx = startX.current - e.clientX;
     if (!dragging.current) {
       if (Math.abs(dx) < DRAG_START_PX && Math.abs(e.movementY) > Math.abs(e.movementX)) return;
@@ -71,7 +72,7 @@ export function SwipeActionsRow({
   };
 
   const finishDrag = (e: React.PointerEvent) => {
-    if (disabled) return;
+    if (disabled || e.pointerType === "mouse" || window.matchMedia(DESKTOP_QUERY).matches) return;
     try {
       e.currentTarget.releasePointerCapture(e.pointerId);
     } catch {
@@ -87,6 +88,10 @@ export function SwipeActionsRow({
   };
 
   const onContentClickCapture = (e: React.MouseEvent) => {
+    if (window.matchMedia(DESKTOP_QUERY).matches) {
+      didSwipe.current = false;
+      return;
+    }
     if (!didSwipe.current) return;
     e.preventDefault();
     e.stopPropagation();
